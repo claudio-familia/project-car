@@ -1,7 +1,6 @@
 import { View, Text, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from "react-native";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
-import { inputStyles } from "../../../styles/input/Input";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { FIREBASE_AUTH } from "../../../firebase-config";
 import { NavigationProp } from "@react-navigation/native";
@@ -53,14 +52,12 @@ const RegisterScreen = ({ navigation }: Props) => {
 			<KeyboardAvoidingView behavior="padding">
 				<Text>Register screen</Text>
 				<TextInput 
-					style={inputStyles.input}
 					value={username}
 					placeholder="Username"
 					onChangeText={val => setUsername(val)}
 					autoCapitalize="none"
 				/>
 				<TextInput 
-					style={inputStyles.input}
 					value={password}
 					placeholder="Password"
 					onChangeText={val => setPassword(val)}
