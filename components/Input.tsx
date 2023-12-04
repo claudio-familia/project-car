@@ -32,7 +32,11 @@ const Input = ({
 				]}>
 				<Icon
 					name={iconName}
-					style={{color: COLORS.primary, fontSize: 22, marginRight: 10}}
+					style={[
+						styles.inputIcon,
+						error ? styles.inputIconError : {},
+						isFocused ? styles.inputIconFocus : {}
+					]}
 				/>
 				<TextInput
 					autoCorrect={false}
@@ -49,7 +53,11 @@ const Input = ({
 					<Icon
 						onPress={() => setHidePassword(!hidePassword)}
 						name={hidePassword ? "eye-outline" : "eye-off-outline"}
-						style={{color: COLORS.primary, fontSize: 22}}
+						style={[
+							styles.inputIcon,
+							error ? styles.inputIconError : {},
+							isFocused ? styles.inputIconFocus : {}
+						]}
 					/>
 				)}
 			</View>
@@ -73,14 +81,27 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.background,
 		flexDirection: "row",
 		paddingHorizontal: 15,
-		borderWidth: 0.5,
+		borderWidth: 1,
 		alignItems: "center",
 	},
 	inputError: {
-		borderColor: COLORS.danger
+		borderColor: COLORS.danger,
+		borderWidth: 1.5,
 	},
 	inputFocus: {
-		borderColor:  COLORS.primary
+		borderColor:  COLORS.primary,
+		borderWidth: 1.5,
+	},
+	inputIcon: {
+		color: COLORS.text,
+		fontSize: 22,
+		marginRight: 10
+	},
+	inputIconFocus: {
+		color: COLORS.primary,
+	},
+	inputIconError: {
+		color: COLORS.danger,
 	}
 });
 

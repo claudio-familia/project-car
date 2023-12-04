@@ -20,7 +20,7 @@ const Button = ({title, onPress = () => {}}: Props) => {
 			onPress={onPress}
 			activeOpacity={0.7}
 			style={styles.button}>
-			<Text style={{color: COLORS.text, fontWeight: "bold", fontSize: 18}}>
+			<Text style={{color: COLORS.white, fontWeight: "bold", fontSize: 18}}>
 				{title}
 			</Text>
 		</TouchableOpacity>

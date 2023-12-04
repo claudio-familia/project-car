@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { NavigationProp } from "@react-navigation/native";
 import React from "react";
 import {View, Text, SafeAreaView, Keyboard} from "react-native";
 import Loader from "../../../components/Loader";
@@ -8,34 +7,29 @@ import Input from "../../../components/Input";
 import { ThemeColors } from "../../../models/theme";
 import Color from "../../../utils/color-const";
 import { useTheme } from "@react-navigation/native";
+import { Props } from "./Login.utils";
+import { FIREBASE_AUTH } from "../../../firebase-config";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 let COLORS: ThemeColors = Color.light.colors;
 
-
-type Props = {
-	navigation: NavigationProp<any, any>
-}
-
-type LoginError = {
-	email: string,
-	password: string
-}
-
-
 const LoginScreen = ({navigation}: Props) => {
-	const [inputs, setInputs] = React.useState({email: "", password: ""});
-	const [errors, setErrors] = React.useState<LoginError>({ email: "", password: ""});
-	const [loading, setLoading] = React.useState(false);
+	const [state, setState] = React.useState({
+		email: "", 
+		password: "",
+		errors: { email: "", password: ""},
+		loading: false
+	});
 	COLORS = useTheme().colors as any;
 
 	const validate = async () => {
 		Keyboard.dismiss();
 		let isValid = true;
-		if (!inputs.email) {
+		if (!state.email) {
 			handleError("Please input email", "email");
 			isValid = false;
 		}
-		if (!inputs.password) {
+		if (!state.password) {
 			handleError("Please input password", "password");
 			isValid = false;
 		}
@@ -44,23 +38,38 @@ const LoginScreen = ({navigation}: Props) => {
 		}
 	};
 
+	const signIn = async (email: string, password: string) => {
+		try {
+			await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
+			console.log("User signed in successfully!");
+		} catch (error: any) {
+			console.error("Error signing in:", error.message);
+		}
+	};
+
+
 	const login = () => {
-		setLoading(true);
-		alert("Login");
-		setLoading(false);
+		setState(prevState => ({...prevState, loading: true}));
+		signIn(state.email, state.password);
+		setState(prevState => ({...prevState, loading: false}));
 	};
 
 	const handleOnchange = (text: string, input: string) => {
-		setInputs(prevState => ({...prevState, [input]: text}));
+		setState(prevState => ({...prevState, [input]: text}));
 	};
 
-	const handleError = (error: any, input: string) => {
-		setErrors(prevState => ({...prevState, [input]: error}));
+	const handleError = (error: any, input: "email" | "password") => {
+		setState(prevState => {
+			prevState.errors[input] = error;
+			return {
+				...prevState,
+			};
+		});
 	};
 
 	return (
 		<SafeAreaView style={{backgroundColor: COLORS.background, flex: 1}}>
-			<Loader visible={loading} />
+			<Loader visible={state.loading} />
 			<View style={{paddingTop: 50, paddingHorizontal: 20}}>
 				<Text style={{color: COLORS.black, fontSize: 40, fontWeight: "bold"}}>
           Log In
@@ -75,7 +84,7 @@ const LoginScreen = ({navigation}: Props) => {
 						iconName="email-outline"
 						label="Email"
 						placeholder="Enter your email address"
-						error={errors.email}
+						error={state.errors.email}
 					/>
 					<Input
 						onChangeText={(text: string) => handleOnchange(text, "password")}
@@ -83,7 +92,7 @@ const LoginScreen = ({navigation}: Props) => {
 						iconName="lock-outline"
 						label="Password"
 						placeholder="Enter your password"
-						error={errors.password}
+						error={state.errors.password}
 						password
 					/>
 					<Button title="Log In" onPress={validate} />
