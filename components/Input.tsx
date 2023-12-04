@@ -46,7 +46,7 @@ const Input = ({
 					}}
 					onBlur={() => setIsFocused(false)}
 					secureTextEntry={hidePassword}
-					style={{color: COLORS.text, flex: 1}}
+					style={styles.input}
 					{...props}
 				/>
 				{password && (
@@ -62,7 +62,7 @@ const Input = ({
 				)}
 			</View>
 			{error && (
-				<Text style={{marginTop: 7, color: COLORS.danger, fontSize: 12}}>
+				<Text style={styles.errorMessage}>
 					{error}
 				</Text>
 			)}
@@ -84,6 +84,10 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		alignItems: "center",
 	},
+	input: {
+		color: COLORS.text,
+		flex: 1
+	},
 	inputError: {
 		borderColor: COLORS.danger,
 		borderWidth: 1.5,
@@ -102,6 +106,11 @@ const styles = StyleSheet.create({
 	},
 	inputIconError: {
 		color: COLORS.danger,
+	},
+	errorMessage: {
+		marginTop: 7,
+		color: COLORS.danger,
+		fontSize: 12
 	}
 });
 

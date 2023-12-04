@@ -1,79 +1,132 @@
-import { View, Text, TextInput, ActivityIndicator, Button, KeyboardAvoidingView } from "react-native";
-import React, { useState } from "react";
-import { StyleSheet } from "react-native";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
+import {Text, Keyboard, StyleSheet, ScrollView, KeyboardAvoidingView} from "react-native";
+import Button from "../../../components/Button";
+import Input from "../../../components/Input";
+import { ThemeColors } from "../../../models/theme";
+import Color from "../../../utils/color-const";
+import { useTheme } from "@react-navigation/native";
 import { FIREBASE_AUTH } from "../../../firebase-config";
-import { NavigationProp } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import PageLayout from "../components/PageLayout";
 
+let COLORS: ThemeColors = Color.light.colors;
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		padding: 10,
-		justifyContent: "center"
-	},
-});
+const RegisterScreen = ({navigation}: any) => {
+	COLORS = useTheme().colors as any;
 
-type Props = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    navigation: NavigationProp<any, any>
-}
+	const [state, setState] = React.useState({
+		email: "", 
+		password: "",
+		city: "",
+		username: "",
+		errors: { 
+			email: "",
+			password: "",
+			city: "",
+			username: ""
+		},
+		loading: false
+	});
 
+	const submit = async () => {
+		Keyboard.dismiss();
+		
+		if (!state.email) {
+			handleError("Please input email", "email");
+			return;
+		}
+		if (!state.password) {
+			handleError("Please input password", "password");
+			return;
+		}
 
-const RegisterScreen = ({ navigation }: Props) => {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
-	const [loading, setLoading] = useState(false);
+		setState(prevState => ({...prevState, loading: true}));
 
-	const goToLogin = async (): Promise<void> => {
-		setLoading(true);
 		try {
-			navigation.navigate("Login");
-		} catch (error) {
-			console.log(error);
+			await signInWithEmailAndPassword(FIREBASE_AUTH, state.email, state.password);
+			navigation.navigate("Home");
+		} catch (error: any) {
+			console.error("Error signing in:", error.message);
 		} finally {
-			setLoading(false);
+			setState(prevState => ({...prevState, loading: false}));
 		}
 	};
 
-	const signUp = async (): Promise<void>  =>  {
-		setLoading(true);
-		try {
-			await createUserWithEmailAndPassword(FIREBASE_AUTH, username, password);
-		} catch (error) {
-			console.log(error);
-		} finally {
-			setLoading(false);
-		}
+	const handleOnchange = (text: string, input: string) => {
+		setState(prevState => ({...prevState, [input]: text}));
+	};
+
+	const handleError = (error: string, input: "email" | "password" | "city" | "username") => {
+		setState(prevState => {
+			prevState.errors[input] = error;
+			return {
+				...prevState,
+			};
+		});
 	};
 
 	return (
-		<View style={styles.container}>
+		<PageLayout 
+			title={"Register"}
+			subtitle="Enter Your information to Login"
+			loading={state.loading}
+		>
 			<KeyboardAvoidingView behavior="padding">
-				<Text>Register screen</Text>
-				<TextInput 
-					value={username}
-					placeholder="Username"
-					onChangeText={val => setUsername(val)}
-					autoCapitalize="none"
-				/>
-				<TextInput 
-					value={password}
-					placeholder="Password"
-					onChangeText={val => setPassword(val)}
-					autoCapitalize="none"
-					secureTextEntry={true}
-				/>
-
-				{loading ? 
-					<ActivityIndicator size="large" color={"#123485"} /> : 
-					<>
-						<Button title={"Register"} onPress={() => signUp()} />
-						<Button title={"Login"} onPress={() => goToLogin()} />
-					</> }
+				<ScrollView>
+					<Input
+						onChangeText={(text: string) => handleOnchange(text, "username")}
+						onFocus={() => handleError("", "username")}
+						iconName="email-outline"
+						label="Username"
+						placeholder="Enter your username address"
+						error={state.errors.username}
+					/>					
+					<Input
+						onChangeText={(text: string) => handleOnchange(text, "email")}
+						onFocus={() => handleError("", "email")}
+						iconName="email-outline"
+						label="Email"
+						placeholder="Enter your email address"
+						error={state.errors.email}
+					/>
+					<Input
+						onChangeText={(text: string) => handleOnchange(text, "password")}
+						onFocus={() => handleError("", "password")}
+						iconName="lock-outline"
+						label="Password"
+						placeholder="Enter your password"
+						error={state.errors.password}
+						password
+					/>
+					<Input
+						onChangeText={(text: string) => handleOnchange(text, "city")}
+						onFocus={() => handleError("", "city")}
+						iconName="email-outline"
+						label="city"
+						placeholder="Enter your city address"
+						error={state.errors.city}
+					/>
+					<Button title="Log In" onPress={submit} />
+					<Text
+						onPress={() => navigation.navigate("Login")}
+						style={styles.link}
+					>
+					Already have an account? Log in now!
+					</Text>
+				</ScrollView>
 			</KeyboardAvoidingView>
-		</View>
+		</PageLayout>
 	);
 };
+
+const styles = StyleSheet.create({
+	link: {
+		color: COLORS.text,
+		fontWeight: "bold",
+		textAlign: "center",
+		fontSize: 16,
+	}
+});
 
 export default RegisterScreen;

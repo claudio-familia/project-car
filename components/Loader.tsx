@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {
 	useWindowDimensions,
@@ -19,6 +18,7 @@ type Props = {
 
 const Loader = ({visible = false}: Props) => {
 	const {width, height} = useWindowDimensions();
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	COLORS = useTheme().colors as any;
 	
 	return (
@@ -26,7 +26,7 @@ const Loader = ({visible = false}: Props) => {
 			<View style={[styles.container, {height, width}]}>
 				<View style={styles.loader}>
 					<ActivityIndicator size="large" color={COLORS.primary} />
-					<Text style={{marginLeft: 10, fontSize: 16}}>Loading...</Text>
+					<Text style={styles.text}>Loading...</Text>
 				</View>
 			</View>
 		)
@@ -49,6 +49,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0,0,0,0.5)",
 		justifyContent: "center",
 	},
+	text: {
+		marginLeft: 10,
+		fontSize: 16
+	}
 });
 
 export default Loader;

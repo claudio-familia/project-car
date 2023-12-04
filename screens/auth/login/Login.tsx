@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import {View, Text, SafeAreaView, Keyboard} from "react-native";
-import Loader from "../../../components/Loader";
+import {Text, Keyboard, StyleSheet} from "react-native";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import { ThemeColors } from "../../../models/theme";
@@ -10,55 +9,51 @@ import { useTheme } from "@react-navigation/native";
 import { Props } from "./Login.utils";
 import { FIREBASE_AUTH } from "../../../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import PageLayout from "../components/PageLayout";
+import { ERROR_MESSAGE } from "../models/firebase-error";
 
 let COLORS: ThemeColors = Color.light.colors;
 
 const LoginScreen = ({navigation}: Props) => {
+	COLORS = useTheme().colors as any;
+
 	const [state, setState] = React.useState({
 		email: "", 
 		password: "",
 		errors: { email: "", password: ""},
 		loading: false
 	});
-	COLORS = useTheme().colors as any;
 
-	const validate = async () => {
+	const submit = async () => {
 		Keyboard.dismiss();
-		let isValid = true;
+		
 		if (!state.email) {
 			handleError("Please input email", "email");
-			isValid = false;
+			return;
 		}
 		if (!state.password) {
 			handleError("Please input password", "password");
-			isValid = false;
+			return;
 		}
-		if (isValid) {
-			login();
-		}
-	};
 
-	const signIn = async (email: string, password: string) => {
-		try {
-			await signInWithEmailAndPassword(FIREBASE_AUTH, email, password);
-			console.log("User signed in successfully!");
-		} catch (error: any) {
-			console.error("Error signing in:", error.message);
-		}
-	};
-
-
-	const login = () => {
 		setState(prevState => ({...prevState, loading: true}));
-		signIn(state.email, state.password);
-		setState(prevState => ({...prevState, loading: false}));
+
+		try {
+			await signInWithEmailAndPassword(FIREBASE_AUTH, state.email, state.password);
+			navigation.navigate("Home");
+			navigation.reset({ index: 0, routes: [{ name: "Home" }]});
+		} catch (error: any) {
+			alert(ERROR_MESSAGE[error.code]);
+		} finally {
+			setState(prevState => ({...prevState, loading: false}));
+		}
 	};
 
 	const handleOnchange = (text: string, input: string) => {
 		setState(prevState => ({...prevState, [input]: text}));
 	};
 
-	const handleError = (error: any, input: "email" | "password") => {
+	const handleError = (error: string, input: "email" | "password") => {
 		setState(prevState => {
 			prevState.errors[input] = error;
 			return {
@@ -68,48 +63,46 @@ const LoginScreen = ({navigation}: Props) => {
 	};
 
 	return (
-		<SafeAreaView style={{backgroundColor: COLORS.background, flex: 1}}>
-			<Loader visible={state.loading} />
-			<View style={{paddingTop: 50, paddingHorizontal: 20}}>
-				<Text style={{color: COLORS.black, fontSize: 40, fontWeight: "bold"}}>
-          Log In
-				</Text>
-				<Text style={{color: COLORS.text, fontSize: 18, marginVertical: 10}}>
-          Enter Your Details to Login
-				</Text>
-				<View style={{marginVertical: 20}}>
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "email")}
-						onFocus={() => handleError(null, "email")}
-						iconName="email-outline"
-						label="Email"
-						placeholder="Enter your email address"
-						error={state.errors.email}
-					/>
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "password")}
-						onFocus={() => handleError(null, "password")}
-						iconName="lock-outline"
-						label="Password"
-						placeholder="Enter your password"
-						error={state.errors.password}
-						password
-					/>
-					<Button title="Log In" onPress={validate} />
-					<Text
-						onPress={() => navigation.navigate("RegistrationScreen")}
-						style={{
-							color: COLORS.black,
-							fontWeight: "bold",
-							textAlign: "center",
-							fontSize: 16,
-						}}>
-            Do not have account ? Register
-					</Text>
-				</View>
-			</View>
-		</SafeAreaView>
+		<PageLayout 
+			title={"Log In"}
+			subtitle="Enter Your Details to Login"
+			loading={state.loading}
+		>
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "email")}
+				onFocus={() => handleError("", "email")}
+				iconName="email-outline"
+				label="Email"
+				placeholder="Enter your email address"
+				error={state.errors.email}
+			/>
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "password")}
+				onFocus={() => handleError("", "password")}
+				iconName="lock-outline"
+				label="Password"
+				placeholder="Enter your password"
+				error={state.errors.password}
+				password
+			/>
+			<Button title="Log In" onPress={submit} />
+			<Text
+				onPress={() => navigation.navigate("SignIn")}
+				style={styles.link}
+			>
+						Do not have account? Register now!
+			</Text>
+		</PageLayout>
 	);
 };
+
+const styles = StyleSheet.create({
+	link: {
+		color: COLORS.text,
+		fontWeight: "bold",
+		textAlign: "center",
+		fontSize: 16,
+	}
+});
 
 export default LoginScreen;
