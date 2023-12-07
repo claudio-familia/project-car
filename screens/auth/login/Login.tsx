@@ -11,6 +11,7 @@ import { FIREBASE_AUTH } from "../../../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import PageLayout from "../components/PageLayout";
 import { ERROR_MESSAGE } from "../models/firebase-error";
+import ValidationMessage from "../../../components/ValidationMessage";
 
 let COLORS: ThemeColors = Color.light.colors;
 
@@ -20,6 +21,7 @@ const LoginScreen = ({navigation}: Props) => {
 	const [state, setState] = React.useState({
 		email: "", 
 		password: "",
+		errorMessage: "",
 		errors: { email: "", password: ""},
 		loading: false
 	});
@@ -43,7 +45,7 @@ const LoginScreen = ({navigation}: Props) => {
 			navigation.navigate("Home");
 			navigation.reset({ index: 0, routes: [{ name: "Home" }]});
 		} catch (error: any) {
-			alert(ERROR_MESSAGE[error.code]);
+			setState(prevState => ({...prevState, errorMessage: ERROR_MESSAGE[error.code]}));
 		} finally {
 			setState(prevState => ({...prevState, loading: false}));
 		}
@@ -68,6 +70,7 @@ const LoginScreen = ({navigation}: Props) => {
 			subtitle="Enter Your Details to Login"
 			loading={state.loading}
 		>
+			{state.errorMessage && <ValidationMessage title="Error al validar" message={state.errorMessage} type="error" />}
 			<Input
 				onChangeText={(text: string) => handleOnchange(text, "email")}
 				onFocus={() => handleError("", "email")}
