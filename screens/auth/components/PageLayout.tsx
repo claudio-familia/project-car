@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactNode } from "react";
-import {View, Text, SafeAreaView, StyleSheet} from "react-native";
+import {View, Text, SafeAreaView, StyleSheet, KeyboardAvoidingView, ScrollView} from "react-native";
 import Loader from "../../../components/Loader";
 import { ThemeColors } from "../../../models/theme";
 import Color from "../../../utils/color-const";
@@ -21,17 +21,19 @@ const PageLayout = ({title, subtitle, loading, children}: Props) => {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Loader visible={loading} />
-			<View style={styles.content}>
-				<Text style={styles.title}>
-					{title}
-				</Text>
-				<Text style={styles.subtitle}>
-					{subtitle}
-				</Text>
-				<View style={{marginVertical: 20}}>
-					{children}
-				</View>
-			</View>
+			<ScrollView>
+				<KeyboardAvoidingView behavior="padding" style={styles.content}>
+					<Text style={styles.title}>
+						{title}
+					</Text>
+					<Text style={styles.subtitle}>
+						{subtitle}
+					</Text>
+					<View style={{marginVertical: 20}}>
+						{children}
+					</View>
+				</KeyboardAvoidingView>
+			</ScrollView>
 		</SafeAreaView>
 	);
 };

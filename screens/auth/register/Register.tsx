@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import {Text, Keyboard, StyleSheet, ScrollView, KeyboardAvoidingView} from "react-native";
+import {Text, Keyboard, StyleSheet} from "react-native";
 import Button from "../../../components/Button";
 import Input from "../../../components/Input";
 import { ThemeColors } from "../../../models/theme";
@@ -72,50 +72,49 @@ const RegisterScreen = ({navigation}: any) => {
 			subtitle="Enter Your information to Login"
 			loading={state.loading}
 		>
-			<KeyboardAvoidingView behavior="padding">
-				<ScrollView>
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "username")}
-						onFocus={() => handleError("", "username")}
-						iconName="email-outline"
-						label="Username"
-						placeholder="Enter your username address"
-						error={state.errors.username}
-					/>					
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "email")}
-						onFocus={() => handleError("", "email")}
-						iconName="email-outline"
-						label="Email"
-						placeholder="Enter your email address"
-						error={state.errors.email}
-					/>
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "password")}
-						onFocus={() => handleError("", "password")}
-						iconName="lock-outline"
-						label="Password"
-						placeholder="Enter your password"
-						error={state.errors.password}
-						password
-					/>
-					<Input
-						onChangeText={(text: string) => handleOnchange(text, "city")}
-						onFocus={() => handleError("", "city")}
-						iconName="email-outline"
-						label="city"
-						placeholder="Enter your city address"
-						error={state.errors.city}
-					/>
-					<Button title="Log In" onPress={submit} />
-					<Text
-						onPress={() => navigation.navigate("Login")}
-						style={styles.link}
-					>
+
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "username")}
+				onFocus={() => handleError("", "username")}
+				iconName="email-outline"
+				label="Username"
+				placeholder="Enter your username address"
+				error={state.errors.username}
+			/>					
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "email")}
+				onFocus={() => handleError("", "email")}
+				iconName="email-outline"
+				autoCapitalize="none"
+				label="Email"
+				placeholder="Enter your email address"
+				error={state.errors.email}
+			/>
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "password")}
+				onFocus={() => handleError("", "password")}
+				iconName="lock-outline"
+				autoCapitalize="none"
+				label="Password"
+				placeholder="Enter your password"
+				error={state.errors.password}
+				password
+			/>
+			<Input
+				onChangeText={(text: string) => handleOnchange(text, "city")}
+				onFocus={() => handleError("", "city")}
+				iconName="email-outline"
+				label="city"
+				placeholder="Enter your city address"
+				error={state.errors.city}
+			/>
+			<Button title="Log In" onPress={submit} />
+			<Text
+				onPress={() => navigation.navigate("Login")}
+				style={styles.link}
+			>
 					Already have an account? Log in now!
-					</Text>
-				</ScrollView>
-			</KeyboardAvoidingView>
+			</Text>
 		</PageLayout>
 	);
 };

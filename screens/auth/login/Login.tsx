@@ -45,7 +45,9 @@ const LoginScreen = ({navigation}: Props) => {
 			navigation.navigate("Home");
 			navigation.reset({ index: 0, routes: [{ name: "Home" }]});
 		} catch (error: any) {
-			setState(prevState => ({...prevState, errorMessage: ERROR_MESSAGE[error.code]}));
+			const _state = {...state};
+			_state.errorMessage = ERROR_MESSAGE[error.code];
+			setState(_state);
 		} finally {
 			setState(prevState => ({...prevState, loading: false}));
 		}
@@ -78,11 +80,13 @@ const LoginScreen = ({navigation}: Props) => {
 				label="Email"
 				placeholder="Enter your email address"
 				error={state.errors.email}
+				autoCapitalize="none"
 			/>
 			<Input
 				onChangeText={(text: string) => handleOnchange(text, "password")}
 				onFocus={() => handleError("", "password")}
 				iconName="lock-outline"
+				autoCapitalize="none"
 				label="Password"
 				placeholder="Enter your password"
 				error={state.errors.password}
