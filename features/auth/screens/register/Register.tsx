@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {Text, Keyboard, StyleSheet} from "react-native";
-import Button from "../../../components/Button";
-import Input from "../../../components/Input";
-import { ThemeColors } from "../../../models/theme";
-import Color from "../../../utils/color-const";
 import { useTheme } from "@react-navigation/native";
-import { FIREBASE_AUTH } from "../../../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import PageLayout from "../components/PageLayout";
+
+import { ThemeColors } from "../../../../core/models/theme";
+import { FIREBASE_AUTH } from "../../../../firebase-config";
+import PageLayout from "../../components/PageLayout";
+import Input from "../../../../core/components/Input";
+import Button from "../../../../core/components/Button";
+import Color from "../../../../utils/color-const";
+
 
 let COLORS: ThemeColors = Color.light.colors;
 

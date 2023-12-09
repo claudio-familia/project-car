@@ -4,7 +4,7 @@ import React from "react";
 import {View, Text, TextInput, StyleSheet} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { ThemeColors } from "../models/theme";
-import Color from "../utils/color-const";
+import Color from "../../utils/color-const";
 
 let COLORS: ThemeColors = Color.light.colors;
 

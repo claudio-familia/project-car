@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import { ThemeColors } from "../models/theme";
-import Color from "../utils/color-const";
+import Color from "../../utils/color-const";
 
 let COLORS: ThemeColors = Color.light.colors;
 

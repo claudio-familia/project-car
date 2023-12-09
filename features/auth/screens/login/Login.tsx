@@ -1,22 +1,24 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import {Text, Keyboard, StyleSheet} from "react-native";
-import Button from "../../../components/Button";
-import Input from "../../../components/Input";
-import { ThemeColors } from "../../../models/theme";
-import Color from "../../../utils/color-const";
+import {Text, Keyboard, StyleSheet } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import { Props } from "./Login.utils";
-import { FIREBASE_AUTH } from "../../../firebase-config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import PageLayout from "../components/PageLayout";
-import { ERROR_MESSAGE } from "../models/firebase-error";
-import ValidationMessage from "../../../components/ValidationMessage";
+import { useTranslation } from "react-i18next";
+
+import { Props } from "./Login.utils";
+import { ThemeColors } from "../../../../core/models/theme";
+import { FIREBASE_AUTH } from "../../../../firebase-config";
+import { ERROR_MESSAGE } from "../../models/firebase-error";
+import PageLayout from "../../components/PageLayout";
+import ValidationMessage from "../../../../core/components/ValidationMessage";
+import Input from "../../../../core/components/Input";
+import Button from "../../../../core/components/Button";
+import Color from "../../../../utils/color-const";
 
 let COLORS: ThemeColors = Color.light.colors;
 
 const LoginScreen = ({navigation}: Props) => {
 	COLORS = useTheme().colors as any;
+	const { t } = useTranslation();
 
 	const [state, setState] = React.useState({
 		email: "", 
@@ -30,11 +32,11 @@ const LoginScreen = ({navigation}: Props) => {
 		Keyboard.dismiss();
 		
 		if (!state.email) {
-			handleError("Please input email", "email");
+			handleError(t("core.login_email_error"), "email");
 			return;
 		}
 		if (!state.password) {
-			handleError("Please input password", "password");
+			handleError(t("core.login_password_error"), "password");
 			return;
 		}
 
@@ -53,6 +55,12 @@ const LoginScreen = ({navigation}: Props) => {
 		}
 	};
 
+	const clearErrorMessage = () => {
+		const _state = {...state};
+		_state.errorMessage = "";
+		setState(_state);
+	};
+
 	const handleOnchange = (text: string, input: string) => {
 		setState(prevState => ({...prevState, [input]: text}));
 	};
@@ -68,17 +76,22 @@ const LoginScreen = ({navigation}: Props) => {
 
 	return (
 		<PageLayout 
-			title={"Log In"}
-			subtitle="Enter Your Details to Login"
+			title={t("core.login_title")}
+			subtitle={t("core.login_subtitle")}
 			loading={state.loading}
 		>
-			{state.errorMessage && <ValidationMessage title="Error al validar" message={state.errorMessage} type="error" />}
+			{state.errorMessage && 
+				<ValidationMessage
+					title= {t("core.login_errorMessageTitle")}
+					message={t(state.errorMessage)}
+					type="error"
+					onPress={clearErrorMessage} />}
 			<Input
 				onChangeText={(text: string) => handleOnchange(text, "email")}
 				onFocus={() => handleError("", "email")}
 				iconName="email-outline"
-				label="Email"
-				placeholder="Enter your email address"
+				label={t("core.login_email_label")}
+				placeholder={t("core.login_email_placeholder")}
 				error={state.errors.email}
 				autoCapitalize="none"
 			/>
@@ -87,18 +100,17 @@ const LoginScreen = ({navigation}: Props) => {
 				onFocus={() => handleError("", "password")}
 				iconName="lock-outline"
 				autoCapitalize="none"
-				label="Password"
-				placeholder="Enter your password"
+				label={t("core.login_password_label")}
+				placeholder={t("core.login_password_placeholder")}
 				error={state.errors.password}
 				password
 			/>
-			<Button title="Log In" onPress={submit} />
+			<Button title={t("core.login_button")} onPress={submit} />
+			<Button type="secondary" title={t("core.login_register")} onPress={() => navigation.navigate("SignIn")} />
 			<Text
 				onPress={() => navigation.navigate("SignIn")}
 				style={styles.link}
-			>
-						Do not have account? Register now!
-			</Text>
+			>{t("core.login_forgetpassword")}</Text>
 		</PageLayout>
 	);
 };
@@ -109,6 +121,7 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		textAlign: "center",
 		fontSize: 16,
+		marginTop: 15
 	}
 });
 

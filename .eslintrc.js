@@ -3,6 +3,7 @@ module.exports = {
 		"browser": true,
 		"es2021": true
 	},
+	"@typescript-eslint/no-unused-vars" : "off",
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
@@ -43,6 +44,6 @@ module.exports = {
 		"semi": [
 			"error",
 			"always"
-		]
+		],
 	}
 };

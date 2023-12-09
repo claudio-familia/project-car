@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactNode } from "react";
 import {View, Text, SafeAreaView, StyleSheet, KeyboardAvoidingView, ScrollView} from "react-native";
-import Loader from "../../../components/Loader";
-import { ThemeColors } from "../../../models/theme";
+import Loader from "../../../core/components/Loader";
+import { ThemeColors } from "../../../core/models/theme";
 import Color from "../../../utils/color-const";
 import { useTheme } from "@react-navigation/native";
 

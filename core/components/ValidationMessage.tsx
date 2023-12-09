@@ -2,7 +2,7 @@
 import React from "react";
 import {TouchableOpacity, Text, StyleSheet, View} from "react-native";
 import { ThemeColors } from "../models/theme";
-import Color from "../utils/color-const";
+import Color from "../../utils/color-const";
 import { useTheme } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
